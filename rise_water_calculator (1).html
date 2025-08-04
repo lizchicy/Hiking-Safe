@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiker Water Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .dropdown {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            font-size: 1rem;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%23718096" d="M6 8L0 2h12z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            cursor: pointer;
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .dropdown:hover {
+            border-color: #cbd5e0;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .result p {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .breakdown {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        .tips {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .tips h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .tips ul {
+            color: #4a5568;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .tips li {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>💧 Water Calculator</h1>
+            <p>Calculate how much water to bring on your hike</p>
+        </div>
+
+        <form id="waterForm">
+            <div class="form-group">
+                <label for="hikerType">👤 Age Group</label>
+                <select id="hikerType" class="dropdown" required>
+                    <option value="">Select age group...</option>
+                    <option value="child">Child (under 18)</option>
+                    <option value="adult">Adult (18-65)</option>
+                    <option value="elderly">Elderly (65+)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">📏 Hike Distance</label>
+                <select id="duration" class="dropdown" required>
+                    <option value="">Select hike distance...</option>
+                    <option value="short">1-3 miles</option>
+                    <option value="medium">3-6 miles</option>
+                    <option value="long">6+ miles</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="terrain">🏔️ Terrain Type</label>
+                <select id="terrain" class="dropdown" required>
+                    <option value="">Select terrain type...</option>
+                    <option value="flat">Flat (minimal elevation change)</option>
+                    <option value="moderate">Moderate hills (some elevation gain)</option>
+                    <option value="steep">Steep/Rocky (significant elevation/rough terrain)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="temperature">🌡️ Weather Conditions</label>
+                <select id="temperature" class="dropdown" required>
+                    <option value="">Select weather conditions...</option>
+                    <option value="cool">Cool weather (under 70°F/21°C)</option>
+                    <option value="moderate">Moderate weather (70-80°F/21-27°C)</option>
+                    <option value="hot">Hot weather (over 80°F/27°C)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="calculate-btn">Calculate Water Needed</button>
+        </form>
+
+        <div id="result" class="result">
+            <h2 id="waterAmount">0L</h2>
+            <p>Recommended water for your hike</p>
+            <p id="bottleCount">That's about 0 standard bottles (500ml)</p>
+            <div class="breakdown" id="breakdown"></div>
+        </div>
+
+        <div class="tips">
+            <h3>💡 Hydration Tips</h3>
+            <ul>
+                <li>Start hydrating 2-3 hours before your hike</li>
+                <li>Drink small amounts regularly, don't wait until thirsty</li>
+                <li>Add extra water in hot weather or high altitude</li>
+                <li>Consider electrolyte supplements for long hikes</li>
+                <li>Know water sources along your trail</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('waterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateWaterNeeds();
+        });
+
+        function calculateWaterNeeds() {
+            const ageGroup = document.getElementById('hikerType').value;
+            const distance = document.getElementById('duration').value;
+            const terrain = document.getElementById('terrain').value;
+            const temperature = document.getElementById('temperature').value;
+
+            if (!ageGroup || !distance || !terrain || !temperature) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Base water consumption rates (liters per mile) based on research
+            // REI recommends 0.5L per hour moderate activity, avg hiking speed 2-3 mph
+            const baseRatePerMile = {
+                'child': 0.25,      // Children need more frequent hydration but smaller amounts
+                'adult': 0.2,       // Standard adult rate (~0.5L per hour at 2.5 mph)
+                'elderly': 0.3      // Elderly need more due to decreased kidney function
+            };
+
+            // Distance estimates in miles (using middle values)
+            const distanceMiles = {
+                'short': 2,    // 1-3 miles average
+                'medium': 4.5, // 3-6 miles average  
+                'long': 8      // 6+ miles (using 8 for calculation)
+            };
+
+            // Terrain multipliers based on difficulty
+            const terrainMultipliers = {
+                'flat': 1.0,        // No additional stress
+                'moderate': 1.4,    // Moderate elevation gain increases effort
+                'steep': 1.8        // Steep/rocky terrain significantly increases exertion
+            };
+
+            // Temperature multipliers - hot weather significantly increases needs
+            const temperatureMultipliers = {
+                'cool': 1.0,        // Baseline consumption
+                'moderate': 1.3,    // 30% increase for moderate heat
+                'hot': 1.8          // 80% increase for hot weather (per research)
+            };
+
+            // Calculate base water needed
+            const miles = distanceMiles[distance];
+            const baseRate = baseRatePerMile[ageGroup];
+            const terrainFactor = terrainMultipliers[terrain];
+            const tempFactor = temperatureMultipliers[temperature];
+
+            const baseWater = miles * baseRate * terrainFactor * tempFactor;
+            
+            // Add 25% safety buffer (increased from 20% due to variable conditions)
+            const totalWater = baseWater * 1.25;
+            
+            // Round to nearest 0.25 liters for practical carrying
+            const roundedWater = Math.ceil(totalWater * 4) / 4;
+            
+            // Calculate bottles (500ml each)
+            const bottles = Math.ceil(roundedWater * 2);
+
+            // Get age group name for display
+            const ageNames = {
+                'child': 'Children',
+                'adult': 'Adults', 
+                'elderly': 'Elderly'
+            };
+
+            // Display results
+            document.getElementById('waterAmount').textContent = roundedWater + 'L';
+            document.getElementById('bottleCount').textContent = `That's about ${bottles} standard bottles (500ml)`;
+            
+            // Show detailed breakdown
+            const breakdown = `
+                <strong>Calculation breakdown:</strong><br>
+                ${ageNames[ageGroup]} base rate: ${baseRate}L per mile<br>
+                Distance: ${miles} miles<br>
+                Terrain factor: ×${terrainFactor}<br>
+                Temperature factor: ×${tempFactor}<br>
+                Base needs: ${baseWater.toFixed(2)}L<br>
+                + 25% safety buffer: ${roundedWater}L total
+            `;
+            document.getElementById('breakdown').innerHTML = breakdown;
+            
+            // Show result
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
